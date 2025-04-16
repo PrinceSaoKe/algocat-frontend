@@ -9,6 +9,10 @@
 </template>
 
 <style scoped>
+.header {
+  box-shadow: #eee 1px 3px 5px;
+}
+
 .content {
   text-align: center;
 }

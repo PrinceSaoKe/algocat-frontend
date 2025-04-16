@@ -1,21 +1,30 @@
 <template>
-  <div id="globalHeader">
-    <a-menu mode="horizontal" :default-selected-keys="['1']">
-      <a-menu-item
-        key="0"
-        :style="{ padding: 0, marginRight: '38px' }"
-        disabled
+  <a-row id="globalHeader" align="center" style="margin-bottom: 16px">
+    <a-col flex="auto">
+      <a-menu
+        mode="horizontal"
+        :selected-keys="selectedKeys"
+        @menu-item-click="doMenuClick"
       >
-        <div class="title-bar">
-          <img class="logo" src="@/assets/logo.png" />
-          <div class="title">AlgoCat</div>
-        </div>
-      </a-menu-item>
-      <a-menu-item v-for="item in routes" :key="item.path">{{
-        item.name
-      }}</a-menu-item>
-    </a-menu>
-  </div>
+        <a-menu-item
+          key="0"
+          :style="{ padding: 0, marginRight: '38px' }"
+          disabled
+        >
+          <div class="title-bar">
+            <img class="logo" src="@/assets/logo.png" />
+            <div class="title">AlgoCat</div>
+          </div>
+        </a-menu-item>
+        <a-menu-item v-for="item in routes" :key="item.path">
+          {{ item.name }}
+        </a-menu-item>
+      </a-menu>
+    </a-col>
+    <a-col flex="100px">
+      <div>{{ store.state.user?.loginUser?.userName ?? "未登录" }}</div>
+    </a-col>
+  </a-row>
 </template>
 
 <style scoped>
@@ -34,6 +43,29 @@
 }
 </style>
 
-<script setup>
+<script setup lang="ts">
 import { routes } from "@/router/routes.ts";
+import { ref } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+
+const store = useStore();
+const router = useRouter();
+
+setTimeout(() => {
+  console.log("开始");
+  store.dispatch("user/getLoginUser", {
+    userName: "骚客",
+  });
+}, 3000);
+
+const selectedKeys = ref(["/"]);
+
+router.afterEach((to) => {
+  selectedKeys.value = [to.path];
+});
+
+const doMenuClick = (key: string) => {
+  router.push(key);
+};
 </script>
